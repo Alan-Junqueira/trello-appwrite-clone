@@ -1,3 +1,4 @@
+import { getTodosGroupedByColumn } from '@/utils/getTodosGroupedByColumn'
 import { create } from 'zustand'
 
 interface IBoardState {
@@ -13,13 +14,16 @@ interface IUseBoardStore {
   actions: IBoardActions
 }
 
-const useBoardStore = create((set) => ({
+export const useBoardStore = create<IUseBoardStore>((set) => ({
   state: {
-    board: null
+    board: {
+      columns: new Map<TypedColumn, Column>()
+    }
   },
   actions: {
-    getBoard: () => {
-
+    getBoard: async () => {
+      const board = await getTodosGroupedByColumn()
+      set({ state: board })
     }
   }
 }))
