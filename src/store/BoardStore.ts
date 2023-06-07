@@ -23,7 +23,15 @@ export const useBoardStore = create<IUseBoardStore>((set) => ({
   actions: {
     getBoard: async () => {
       const board = await getTodosGroupedByColumn()
-      set({ state: board })
+      set(prev => {
+        return {
+          ...prev,
+          state: {
+            ...prev.state,
+            board
+          }
+        }
+      })
     }
   }
 }))
