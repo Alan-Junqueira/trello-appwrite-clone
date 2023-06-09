@@ -7,11 +7,26 @@ import { Column } from './Column';
 
 export const Board = () => {
   const {
-    actions: { getBoard },
+    actions: { getBoard, setBoardState },
     state: { board }
   } = useBoardStore()
 
   const handleOnDragEnd = (result: DropResult) => {
+    const { destination, source, type } = result
+
+    // ? Check if user dragged card outside of board
+    if (!destination) return;
+
+    // ? Handle column drag
+    if (type === "column") {
+      const entries = Array.from(board.columns.entries());
+      const [removed] = entries.splice(source.index, 1)
+      entries.splice(destination.index, 0, removed)
+
+      const rearrangedColumns = new Map(entries)
+      setBoardState({ columns: rearrangedColumns })
+    }
+
 
   }
 

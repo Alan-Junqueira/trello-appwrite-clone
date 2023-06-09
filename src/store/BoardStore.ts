@@ -7,6 +7,7 @@ interface IBoardState {
 
 interface IBoardActions {
   getBoard: () => void
+  setBoardState: (board: Board) => void
 }
 
 interface IUseBoardStore {
@@ -24,6 +25,17 @@ export const useBoardStore = create<IUseBoardStore>((set) => ({
     getBoard: async () => {
       const board = await getTodosGroupedByColumn()
       set(prev => {
+        return {
+          ...prev,
+          state: {
+            ...prev.state,
+            board
+          }
+        }
+      })
+    },
+    setBoardState: async (board) => {
+      set((prev) => {
         return {
           ...prev,
           state: {
