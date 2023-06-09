@@ -1,6 +1,7 @@
 import { PlusCircleIcon } from '@heroicons/react/24/solid'
 import React from 'react'
 import { Draggable, Droppable } from 'react-beautiful-dnd'
+import { TodoCard } from './TodoCard'
 
 interface IColumn {
   id: TypedColumn
@@ -67,9 +68,9 @@ export const Column = ({ id, index, todos }: IColumn) => {
                   {/* Create a space when a item is draggable */}
                   {provided.placeholder}
 
-                  <div>
-                    <button className='flex items-end justify-end p-2'>
-                      <PlusCircleIcon className='h-10 w-10' />
+                  <div className='flex items-end justify-end p-2'>
+                    <button >
+                      <PlusCircleIcon className='h-10 w-10 text-green-500' />
                     </button>
                   </div>
                 </div>
