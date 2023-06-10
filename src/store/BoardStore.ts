@@ -1,4 +1,4 @@
-import { databases } from '@/services/appwrite'
+import { databases, storage } from '@/services/appwrite'
 import { getTodosGroupedByColumn } from '@/utils/getTodosGroupedByColumn'
 import { create } from 'zustand'
 
@@ -13,6 +13,8 @@ interface IBoardActions {
   updateTodoInDb: (todo: Todo, columnId: TypedColumn) => void
 
   setSearchString: (searchString: string) => void
+
+  deleteTask: (taskIndex: number, todo: Todo, id: TypedColumn) => void
 }
 
 interface IUseBoardStore {
@@ -20,7 +22,7 @@ interface IUseBoardStore {
   actions: IBoardActions
 }
 
-export const useBoardStore = create<IUseBoardStore>((set) => ({
+export const useBoardStore = create<IUseBoardStore>((set, get) => ({
   state: {
     board: {
       columns: new Map<TypedColumn, Column>()
@@ -72,6 +74,35 @@ export const useBoardStore = create<IUseBoardStore>((set) => ({
           }
         }
       })
+    },
+    deleteTask: async (taskIndex: number, todo: Todo, id: TypedColumn) => {
+      const newColumns = new Map(get().state.board.columns)
+
+      // ? Delete todoId from newColumns
+      newColumns.get(id)?.todos.splice(taskIndex, 1)
+
+      set(prev => {
+        return {
+          ...prev,
+          state: {
+            ...prev.state,
+            board: {
+              ...prev.state.board,
+              columns: newColumns
+            }
+          }
+        }
+      })
+
+      if (todo.image) {
+        await storage.deleteFile(todo.image.bucketId, todo.image.fileId)
+      }
+
+      await databases.deleteDocument(
+        process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID!,
+        process.env.NEXT_PUBLIC_APPWRITE_TODOS_COLLECTION_ID!,
+        todo.$id
+      )
     }
   }
 }))

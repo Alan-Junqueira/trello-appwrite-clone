@@ -10,5 +10,3 @@ export default function Home() {
     </main>
   )
 }
-
-// 2:13:02
