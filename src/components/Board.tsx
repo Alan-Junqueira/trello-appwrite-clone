@@ -63,6 +63,22 @@ export const Board = () => {
       setBoardState({ columns: newColumns })
     } else {
       // ? Dragging to another column
+      const finishTodos = Array.from(finishColumn.todos)
+      finishTodos.splice(destination.index, 0, todoMoved)
+
+      const newColumns = new Map(board.columns)
+      const newColumn = {
+        id: startColumn.id,
+        todos: newTodos
+      }
+
+      newColumns.set(startColumn.id, newColumn)
+      newColumns.set(finishColumn.id, {
+        id: finishColumn.id,
+        todos: finishTodos
+      })
+
+      setBoardState({ columns: newColumns })
     }
   }
 
