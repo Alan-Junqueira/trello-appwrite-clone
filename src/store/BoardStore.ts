@@ -4,12 +4,15 @@ import { create } from 'zustand'
 
 interface IBoardState {
   board: Board
+  searchString: string
 }
 
 interface IBoardActions {
   getBoard: () => void
   setBoardState: (board: Board) => void
   updateTodoInDb: (todo: Todo, columnId: TypedColumn) => void
+
+  setSearchString: (searchString: string) => void
 }
 
 interface IUseBoardStore {
@@ -21,7 +24,8 @@ export const useBoardStore = create<IUseBoardStore>((set) => ({
   state: {
     board: {
       columns: new Map<TypedColumn, Column>()
-    }
+    },
+    searchString: '',
   },
   actions: {
     getBoard: async () => {
@@ -57,6 +61,17 @@ export const useBoardStore = create<IUseBoardStore>((set) => ({
           status: columnId
         }
       )
+    },
+    setSearchString: (searchString) => {
+      set(prev => {
+        return {
+          ...prev,
+          state: {
+            ...prev.state,
+            searchString
+          }
+        }
+      })
     }
   }
 }))
