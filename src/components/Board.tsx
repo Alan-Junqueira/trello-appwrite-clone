@@ -27,7 +27,43 @@ export const Board = () => {
       setBoardState({ columns: rearrangedColumns })
     }
 
+    // * This step is needed as the indexes are stored as numbers 0, 1, 2, etc. Instead of id's with DND' library.
+    const columns = Array.from(board.columns);
+    const startColumnIndex = columns[Number(source.droppableId)]
+    const finishColumnIndex = columns[Number(destination.droppableId)]
 
+    const startColumn = {
+      id: startColumnIndex[0],
+      todos: startColumnIndex[1].todos
+    }
+
+    const finishColumn = {
+      id: finishColumnIndex[0],
+      todos: finishColumnIndex[1].todos
+    }
+
+    if (!startColumn || !finishColumn) return
+
+    if (source.index === destination.index && startColumn === finishColumn) return
+
+    const newTodos = startColumn.todos
+    const [todoMoved] = newTodos.splice(source.index, 1)
+
+    if (startColumn.id === finishColumn.id) {
+      // ? Same columns task drag
+      newTodos.splice(destination.index, 0, todoMoved)
+      const newColumn = {
+        id: startColumn.id,
+        todos: newTodos
+      }
+
+      const newColumns = new Map(board.columns)
+      newColumns.set(startColumn.id, newColumn)
+
+      setBoardState({ columns: newColumns })
+    } else {
+      // ? Dragging to another column
+    }
   }
 
   useEffect(() => {
