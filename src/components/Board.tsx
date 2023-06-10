@@ -7,7 +7,7 @@ import { Column } from './Column';
 
 export const Board = () => {
   const {
-    actions: { getBoard, setBoardState },
+    actions: { getBoard, setBoardState, updateTodoInDb },
     state: { board }
   } = useBoardStore()
 
@@ -77,6 +77,9 @@ export const Board = () => {
         id: finishColumn.id,
         todos: finishTodos
       })
+
+      // ? Update data on DB.
+      updateTodoInDb(todoMoved, finishColumn.id)
 
       setBoardState({ columns: newColumns })
     }
