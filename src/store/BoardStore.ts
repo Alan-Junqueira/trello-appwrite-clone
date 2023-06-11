@@ -5,6 +5,8 @@ import { create } from 'zustand'
 interface IBoardState {
   board: Board
   searchString: string
+  newTaskInput: string
+  newTaskType: TypedColumn
 }
 
 interface IBoardActions {
@@ -15,6 +17,9 @@ interface IBoardActions {
   setSearchString: (searchString: string) => void
 
   deleteTask: (taskIndex: number, todo: Todo, id: TypedColumn) => void
+
+  setNewTaskInput: (input: string) => void
+  setNewTaskType: (columnId: TypedColumn) => void
 }
 
 interface IUseBoardStore {
@@ -28,6 +33,8 @@ export const useBoardStore = create<IUseBoardStore>((set, get) => ({
       columns: new Map<TypedColumn, Column>()
     },
     searchString: '',
+    newTaskInput: '',
+    newTaskType: 'todo'
   },
   actions: {
     getBoard: async () => {
@@ -103,6 +110,24 @@ export const useBoardStore = create<IUseBoardStore>((set, get) => ({
         process.env.NEXT_PUBLIC_APPWRITE_TODOS_COLLECTION_ID!,
         todo.$id
       )
+    },
+    setNewTaskInput: (input: string) => {
+      set(prev => ({
+        ...prev,
+        state: {
+          ...prev.state,
+          newTaskInput: input
+        }
+      }))
+    },
+    setNewTaskType: (columnId: TypedColumn) => {
+      set(prev => ({
+        ...prev,
+        state: {
+          ...prev.state,
+          newTaskType: columnId
+        }
+      }))
     }
   }
 }))
