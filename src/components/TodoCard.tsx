@@ -1,7 +1,10 @@
 'use client'
 
 import { useBoardStore } from "@/store/BoardStore"
+import { getUrl } from "@/utils/getUrl"
 import { XCircleIcon } from "@heroicons/react/24/solid"
+import Image from "next/image"
+import { useEffect, useState } from "react"
 import { DraggableProvidedDragHandleProps, DraggableProvidedDraggableProps } from "react-beautiful-dnd"
 
 interface ITodoCard {
@@ -14,7 +17,25 @@ interface ITodoCard {
 }
 
 export const TodoCard = ({ draggableProps, id, index, innerRef, todo, dragHandleProps }: ITodoCard) => {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+
+  console.log("imageUrl ==>>", imageUrl)
+
   const { actions: { deleteTask } } = useBoardStore()
+
+  useEffect(() => {
+    if (todo.image) {
+      const fetchImage = async () => {
+        const url = await getUrl(todo.image!)
+
+        if (url) {
+          setImageUrl(url.toString())
+        }
+      }
+
+      fetchImage()
+    }
+  }, [todo])
 
   return (
     <div
@@ -32,9 +53,17 @@ export const TodoCard = ({ draggableProps, id, index, innerRef, todo, dragHandle
         </button>
       </div>
 
-      {/* {imageUrl && (
-
-      )} */}
+      {imageUrl && (
+        <div className="relative h-full -w-full rounded-b-md">
+          <Image
+            src={imageUrl}
+            alt="Task image"
+            width={400}
+            height={200}
+            className="w-full object-contain rounded-b-md"
+          />
+        </div>
+      )}
     </div>
   )
 }

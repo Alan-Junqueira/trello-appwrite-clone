@@ -20,10 +20,16 @@ const idToColumnText: { [key in TypedColumn]: string } =
 
 export const Column = ({ id, index, todos }: IColumn) => {
   const {
-    state: { searchString }
+    state: { searchString },
+    actions: { setNewTaskType }
   } = useBoardStore()
 
   const { actions: { openModal } } = useModalStore()
+
+  const handleAddTodo = async () => {
+    setNewTaskType(id)
+    openModal()
+  }
 
   return (
     <Draggable draggableId={id} index={index}>
@@ -81,7 +87,7 @@ export const Column = ({ id, index, todos }: IColumn) => {
 
                   <div className='flex items-end justify-end p-2'>
                     <button >
-                      <PlusCircleIcon className='h-10 w-10 text-green-500' onClick={openModal} />
+                      <PlusCircleIcon className='h-10 w-10 text-green-500' onClick={handleAddTodo} />
                     </button>
                   </div>
                 </div>
